@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  /* Daftarkan palet warna utama di sini */
+  --color-brand-light: #15803d;
+  --color-brand: #166534;
+  --color-brand-dark: #14532d;
+}
