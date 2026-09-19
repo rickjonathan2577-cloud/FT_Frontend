@@ -15,7 +15,7 @@ export default function LoginPage() {
     const [ errorMessage , setErrorMessage ] = useState("")
 
     const handlelogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+       e.preventDefault();
         setIsloading(true);
         setErrorMessage("");
         try {
@@ -23,9 +23,17 @@ export default function LoginPage() {
                 email : email, 
                 password : password
             });
+            
             const userData = response.data.data.user;
-            localStorage.setItem("user", JSON.stringify(userData))
-            router.push('/')
+            const token = response.data.data.token; // <--- AMBIL TOKENNYA
+
+            // 1. Simpan user di LocalStorage untuk UI
+            localStorage.setItem("user", JSON.stringify(userData));
+            
+            // 2. Simpan token di Cookie agar Middleware Next.js (Vercel) bisa membacanya
+            document.cookie = `token=${token}; path=/; max-age=3600; secure`;
+
+            router.push('/');
         } catch (error:any) {
             if (error.response && error.response.data.message) {
               console.log(error.response)
