@@ -19,13 +19,13 @@ export default function LoginPage() {
         setIsloading(true);
         setErrorMessage("");
         try {
-            const response = await api.post("auth/login", {
+            const response = await api.post("/auth/login", {
                 email : email, 
                 password : password
             });
             const userData = response.data.data.user;
             localStorage.setItem("user", JSON.stringify(userData))
-            router.push("/")
+            router.push('/')
         } catch (error:any) {
             if (error.response && error.response.data.message) {
               console.log(error.response)
