@@ -5,11 +5,27 @@ import { useState , useEffect } from 'react'
 import api from "../lib/axios"; // Mengimpor instance axios yang telah dikonfigurasi
 
 export default function TransactionsPage() {
+
+  interface Category {
+    id: string;
+    name: string;
+    type: string;
+  }
+
+  interface Transaction {
+    id: string;
+    amount: number;
+    description: string;
+    categoryId: string;
+    category?: string; // Tanda tanya berarti opsional
+    date: string;
+    type: string;
+  }
   // State DATA
-  const [ transactions , setTransactions ] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [ transactions , setTransactions ] = useState<Transaction[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [ isLoading, setIsLoading ] = useState(false);
-  const [ errorMessage , setErrorMessage ] = useState("")
+  const [ errorMessage , setErrorMessage ] = useState<string | null>(null)
 
   
   // --- STATE PENCARIAN & FILTER ---
@@ -18,7 +34,7 @@ export default function TransactionsPage() {
 
 // --- STATE MODAL FORM (CREATE & EDIT) ---
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState(null); // null = mode tambah, ada ID = mode edit
+  const [editingId, setEditingId] = useState<string | null>(null);// null = mode tambah, ada ID = mode edit
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [categoryId, setCategoryId] = useState("");
@@ -28,7 +44,7 @@ export default function TransactionsPage() {
 
   // --- STATE MODAL DELETE ---
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [transactionToDelete, setTransactionToDelete] = useState(null);
+  const [transactionToDelete, setTransactionToDelete] = useState<Transaction | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const fetchTransactions = async () => {
@@ -74,9 +90,9 @@ export default function TransactionsPage() {
       setSubmitError("");
     };
 
-  const handleEditClick = (trx) => {
+  const handleEditClick = (trx: Transaction) => {
     setEditingId(trx.id);
-    setAmount(trx.amount);
+    setAmount(String(trx.amount));
     setDescription(trx.description || "");
     setCategoryId(trx.categoryId || ""); // Mengambil ID dari relasi prisma
     // Mengambil tanggal dengan format YYYY-MM-DD
@@ -85,7 +101,7 @@ export default function TransactionsPage() {
     setIsModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || !categoryId) {
       setSubmitError("Jumlah nominal dan kategori wajib diisi!");
@@ -111,7 +127,7 @@ export default function TransactionsPage() {
 
       setIsModalOpen(false);
       fetchTransactions(); 
-    } catch (error) {
+    } catch (error : any) {
       setSubmitError(error.response?.data?.message || "Gagal menyimpan transaksi.");
     } finally {
       setIsSubmitting(false);
@@ -119,7 +135,7 @@ export default function TransactionsPage() {
   };
 
   // --- HANDLERS UNTUK HAPUS ---
-  const handleDeleteClick = (trx) => {
+  const handleDeleteClick = (trx: Transaction) => {
     setTransactionToDelete(trx);
     setIsDeleteModalOpen(true);
   };
@@ -133,7 +149,7 @@ export default function TransactionsPage() {
       setIsDeleteModalOpen(false);
       setTransactionToDelete(null);
       fetchTransactions();
-    } catch (error) {
+    } catch (error : any) {
       console.error("Error deleting transaction:", error);
       alert(error.response?.data?.message || "Gagal menghapus transaksi.");
     } finally {
@@ -185,8 +201,8 @@ export default function TransactionsPage() {
     }).format(amount);
   };
 
-  const formatDate = (dateString) => {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  const formatDate = (dateString : string) => {
+    const options: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
     return new Date(dateString).toLocaleDateString('id-ID', options);
   };
 
@@ -245,7 +261,7 @@ export default function TransactionsPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-20 text-gray-500"><Loader2 className="animate-spin mb-4" size={32} /><p>Memuat data...</p></div>
         ) : errorMessage ? (
-          <div className="text-center py-20 text-red-500"><p>{errorMessage}</p><button onClick={fetchInitialData} className="mt-4 text-brand underline cursor-pointer">Coba lagi</button></div>
+          <div className="text-center py-20 text-red-500"><p>{errorMessage}</p><button onClick={fetchTransactions} className="mt-4 text-brand underline cursor-pointer">Coba lagi</button></div>
         ) : transactions.length === 0 ? (
           <div className="text-center py-20 text-gray-500 dark:text-gray-400"><p>Belum ada transaksi yang dicatat.</p></div>
         ) : (
@@ -262,7 +278,7 @@ export default function TransactionsPage() {
               </thead>
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {filteredTransactions.length === 0 ? (
-                  <tr><td colSpan="5" className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Tidak ada transaksi yang cocok.</td></tr>
+                  <tr><td colSpan={5} className="px-6 py-12 text-center text-gray-500 dark:text-gray-400">Tidak ada transaksi yang cocok.</td></tr>
                 ) : (
                   filteredTransactions.map((trx) => (
                     <tr key={trx.id} className="group hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors cursor-pointer">

@@ -5,11 +5,22 @@
   import { useState, useEffect } from 'react'
 
   axios.defaults.withCredentials = true;
+  
+  
+
 
   export default function CategoriesPage() {
-    const [ categories, setCategories ] = useState([]);
+
+    interface Category {
+      id: string;
+      name: string;
+      type: string;
+      count?: number;
+    }
+
+    const [categories, setCategories] = useState<Category[]>([]);
     const [ isLoading, setIsloading ] = useState(false);
-    const [ errorMessage, setErrorMessage ] = useState("");
+    const [ errorMessage, setErrorMessage ] = useState<string | null>(null); // TAMBAHKAN <string | null>
 
     // modal untuk tambak kategori //
     const [ isModalOpen , setIsModalOpen ] = useState(false);
@@ -20,7 +31,8 @@
 
     // --- STATE UNTUK DELETE MODAL ---
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [categoryToDelete, setCategoryToDelete] = useState(null); // Menyimpan { id, name }
+    // TAMBAHKAN TIPE DATA UNTUK OBJECT categoryToDelete
+    const [categoryToDelete, setCategoryToDelete] = useState<{id: string, name: string} | null>(null); 
     const [isDeleting, setIsDeleting] = useState(false);
 
     const fetchCategories = async () => {
@@ -32,7 +44,7 @@
             console.log(categories)
             setErrorMessage(null);
           } catch (err){
-            setErrorMessage("Gagal memuat data", err);
+            setErrorMessage("Gagal memuat data")
           } finally {
             setIsloading(false);
           }
@@ -64,12 +76,12 @@
       
     } catch (error) {
       console.error("Gagal menghapus kategori:", error);
-      alert("Gagal menghapus kategori. Silakan coba lagi.", error);
+      alert("Gagal menghapus kategori. Silakan coba lagi.");
     } finally {
       setIsDeleting(false);
     }
   };
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Mencegah halaman reload saat form disubmit
     
     // Validasi basic di frontend

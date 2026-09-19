@@ -29,11 +29,11 @@ export default function RegisterPage() {
             const userdata = response.data.data.user;
             localStorage.setItem("user", JSON.stringify(userdata));
             router.push("/");
-        } catch (error:any) {
+        } catch (error : any) {
             if (error.response && error.response.data.message) {
                 const backendError = error.response.data.errors;
                 if(backendError && backendError.length > 0){
-                    backendError.forEach((err) => {
+                    backendError.forEach((err : any ) => {
                         console.log(err.message)
                         setErrorMessage(err.message)
                     })

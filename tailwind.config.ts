@@ -1,1 +1,1 @@
-import type { config } from 'tailwindcss'
+import type { Config } from 'tailwindcss'

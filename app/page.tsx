@@ -7,11 +7,20 @@ import api from "./lib/axios"; // Mengimpor instance axios yang telah dikonfigur
 
 
 export default function Home() {
+
+  interface Transaction {
+    id: string;
+    type: 'INCOME' | 'EXPENSE';
+    description?: string;
+    category?: string;
+    date: string;
+    amount: number;
+  }
   //  State Data 
-  const [ summary , setSummary ] = useState({ balance: 0, income: 0, expense: 0 });
-  const [ recentTransactions , setRecentTransactions ] = useState([]);
+  const [ summary , setSummary ] = useState({ balance: 0, totalIncome: 0, totalExpense: 0 });
+  const [ recentTransactions , setRecentTransactions ] = useState<Transaction[]>([]);
   const [ isLoading , setIsLoading ] = useState(false);
-  const [ errorMessage , setErrorMessage ] = useState("");
+  const [ errorMessage , setErrorMessage ] = useState<string | null>(null);
 
   // Fungsi untuk mengambil data ringkasan dan transaksi terbaru dari API
   const fetchData = async () => {
@@ -44,7 +53,7 @@ export default function Home() {
   }, []); 
 
   // Fungsi pembantu untuk merapikan angka menjadi Rupiah (Rp)
-const formatIDR = (amount) => {
+const formatIDR = (amount:number) => {
     return new Intl.NumberFormat('id-ID', { 
       style: 'currency', 
       currency: 'IDR', 
@@ -52,7 +61,7 @@ const formatIDR = (amount) => {
     }).format(amount);
   };
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString:string) => {
     return new Date(dateString).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
   };
 
@@ -69,7 +78,7 @@ const formatIDR = (amount) => {
     return (
       <div className="max-w-5xl mx-auto text-center py-40 text-red-500 animate-in fade-in">
         <p className="text-lg">{errorMessage}</p>
-        <button onClick={fetchDashboardData} className="mt-4 text-brand underline cursor-pointer">
+        <button onClick={fetchData} className="mt-4 text-brand underline cursor-pointer">
           Coba Muat Ulang
         </button>
       </div>
