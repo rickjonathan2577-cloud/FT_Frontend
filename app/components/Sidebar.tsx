@@ -32,17 +32,14 @@ export default function Sidebar() {
   ];
 
   const handleLogout = async () => {
-    try {
-      await api.post("/auth/logout"); // Memanggil endpoint logout di backend
-
-      localStorage.removeItem('user');
-
-      router.push('/login');
-      router.refresh()
-    } catch (error){
-      console.error("Logout Failed:", error);
-      alert("Something Went Wrong");
-    }
+    // 1. Hapus cookie token dengan cara *expired*-kan umurnya
+    document.cookie = 'token=; path=/; max-age=0;';
+    
+    // 2. Hapus data user dari localStorage
+    localStorage.removeItem('user');
+    
+    // 3. Lempar paksa ke halaman login
+    window.location.href = '/login';
   }
 
   return (
