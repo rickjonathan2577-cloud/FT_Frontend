@@ -33,7 +33,7 @@ export default function LoginPage() {
             // 2. Simpan token di Cookie agar Middleware Next.js (Vercel) bisa membacanya
             document.cookie = `token=${token}; path=/; max-age=3600; secure`;
 
-            router.push('/');
+            window.location.href = '/';
         } catch (error:any) {
             if (error.response && error.response.data.message) {
               console.log(error.response)
