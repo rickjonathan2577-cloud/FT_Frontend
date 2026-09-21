@@ -39,7 +39,7 @@
     const fetchCategories = async () => {
           try{ 
             setIsloading(true);
-            const response = await api.get('/api/category/');
+            const response = await api.get('/category/');
 
             setCategories(response.data.data)
             console.log(categories)
@@ -68,7 +68,7 @@
     try {
       setIsDeleting(true);
       // Panggil endpoint delete backend dengan ID dari state
-      await axios.delete(`http://localhost:5000/api/category/delete/${categoryToDelete.id}`);
+      await api.delete(`/category/delete/${categoryToDelete.id}`);
       
       // Sukses: Tutup modal, reset state, dan refresh data grid
       setIsDeleteModalOpen(false);
@@ -96,7 +96,7 @@
       setSubmitError("");
       
       // Hit endpoint create kategori
-      await axios.post('http://localhost:5000/api/category/create', {
+      await api.post('/category/create', {
         name: categoryName,
         type: categoryType
       });
