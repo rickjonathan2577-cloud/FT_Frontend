@@ -11,7 +11,7 @@ api.interceptors.request.use((config) => {
   const token = match ? match[2] : null;
 
   if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.authorization = `Bearer ${token}`;
   }
   return config;
 }, (error) => {
