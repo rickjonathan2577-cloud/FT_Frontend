@@ -38,7 +38,7 @@
     const fetchCategories = async () => {
           try{ 
             setIsloading(true);
-            const response = await axios.get('http://localhost:5000/api/category/');
+            const response = await api.get('/api/category/');
 
             setCategories(response.data.data)
             console.log(categories)
