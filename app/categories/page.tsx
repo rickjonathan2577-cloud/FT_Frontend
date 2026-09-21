@@ -2,7 +2,8 @@
 
   import axios from 'axios'
   import { Plus, Edit, Trash2, TrendingUp, TrendingDown, LayoutGrid, Loader2, X } from "lucide-react";
-  import { useState, useEffect } from 'react'
+  import { useState, useEffect } from 'react';
+  import api from "../lib/axios"; 
 
   axios.defaults.withCredentials = true;
   
