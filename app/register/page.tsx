@@ -27,8 +27,11 @@ export default function RegisterPage() {
                     password: password
             })
             const userdata = response.data.data.user;
+            const token = response.data.data.token; //
+
             localStorage.setItem("user", JSON.stringify(userdata));
-            router.push("/");
+            document.cookie = `token=${token}; path=/; max-age=3600; secure`;
+            window.location.href = '/';
         } catch (error : any) {
             if (error.response && error.response.data.message) {
                 const backendError = error.response.data.errors;
